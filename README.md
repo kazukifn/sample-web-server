@@ -85,4 +85,119 @@ Removing: /Users/kazuki/Library/Logs/Homebrew/xz... (64B)
 Removing: /Users/kazuki/Library/Logs/Homebrew/openssl... (64B)
 
 
+
+This utility will walk you through creating a package.json file.
+It only covers the most common items, and tries to guess sensible defaults.
+
+See `npm help json` for definitive documentation on these fields
+and exactly what they do.
+
+Use `npm install <pkg>` afterwards to install a package and
+save it as a dependency in the package.json file.
+
+Press ^C at any time to quit.
+
+
+
+
+
+
+
+
+node index.js
+npm notice created a lockfile as package-lock.json. You should commit this file.
+npm WARN mywebapi@1.0.0 No description
+npm WARN mywebapi@1.0.0 No repository field.
+
++ express@4.17.1
+added 50 packages from 37 contributors and audited 126 packages in 2.96s
+found 0 vulnerabilities
+
+oonishiikkinoMacBook-Pro:mywebapi kazuki$ node index.js
+Listening on port 3000
+^C
+
+
+
+// expressモジュールを読み込む
+const express = require('express');
+
+// expressアプリを生成する
+const app = express();
+
+// http://localhost:3000/api/v1/list にアクセスしてきたときに
+// TODOリストを返す
+app.get('/api/v1/list', (req, res) => {
+    // クライアントに送るJSONデータ
+    const todoList = [
+        { title: 'JavaScriptを勉強する', done: true },
+        { title: 'Node.jsを勉強する', done: false },
+        { title: 'Web APIを作る', done: false }
+    ];
+
+    // JSONを送信する
+    res.json(todoList);
+});
+
+// ポート3000でサーバを立てる
+app.listen(3000, () => console.log('Listening on port 3000'));
+
+
+
+node index.js
+[{"title":"JavaScriptを勉強する","done":true},{"title":"Node.jsを勉強する","done":false},{"title":"Web APIを作る","done":false}]
+
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>TODOリスト</title>
+    <style>
+        html {
+            background-color: rgb(240, 240, 240);
+        }
+    </style>
+</head>
+<body>
+    <h1>TODO List</h1>
+    <div>
+        <ul id="todo-container"></ul>
+    </div>
+
+    <script>
+        // APIからJSONを取得する
+        fetch('./api/v1/list')
+            .then((response) => response.json())
+            .then((todoList) => {
+                // id="todo-container"要素を取得する
+                const todoContainer = document.querySelector('#todo-container');
+
+                // コンテナの中身を全部消す
+                todoContainer.innerHTML = '';
+
+                // JSONの各要素に対して
+                for(const item of todoList) {
+                    const li = document.createElement('li');          // リスト要素
+                    const label = document.createElement('label');    // ラベル
+                    const checkbox = document.createElement('input'); // チェックボックス
+                    checkbox.type = 'checkbox';
+                    checkbox.checked = item.done;                     // 項目がdoneならチェック
+                    const text = new Text(item.title);                // 項目名
+
+                    // ラベルにチェックボックスとテキストを追加する
+                    label.appendChild(checkbox);
+                    label.appendChild(text);
+
+                    // リスト要素に先ほどのラベルを追加する
+                    li.appendChild(label);
+
+                    // TODOリストにリスト要素を追加する
+                    todoContainer.appendChild(li);
+                }
+            })
+    </script>
+</body>
+</html>
+
 ```
